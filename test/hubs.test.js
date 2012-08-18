@@ -30,5 +30,15 @@ exports.canUseDoubleStarToListenToAllEvents = function(test) {
     });
     
     hub.emit("projects.compiler.finished");
+};
+
+exports.thisIsBoundToEventWithNameInListener = function(test) {
+    var hub = hubs.createHub();
     
+    hub.on("**", function() {
+        test.equal(this.name, "projects.compiler.finished");
+        test.done();
+    });
+    
+    hub.emit("projects.compiler.finished");
 };
