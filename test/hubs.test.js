@@ -59,3 +59,14 @@ exports.thisIsBoundToEventWithNameInListener = function(test) {
     
     hub.emit("projects.compiler.finished");
 };
+
+exports.singleStarIsWildcardForEventNameSection = function(test) {
+    var hub = hubs.createHub();
+    
+    hub.on("projects.*.finished", function() {
+        test.equal(this.name, "projects.compiler.finished");
+        test.done();
+    });
+    
+    hub.emit("projects.compiler.finished");
+};
