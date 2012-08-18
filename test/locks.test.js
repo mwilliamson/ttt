@@ -12,6 +12,22 @@ exports.functionIsCalledImmediatelyIfLockIsAvailable = function(test) {
     });
 };
 
+exports.canAcquireLockAfterItsReleased = function(test) {
+    var lock = locks.createLock();
+    var add = lock.wrap(function(first, second, callback) {
+        callback(first + second);
+    });
+    
+    add(1, 2, function(result) {
+        test.equal(result, 3);
+    });
+    
+    add(7, 9, function(result) {
+        test.equal(result, 16);
+        test.done();
+    });
+};
+
 exports.functionsMustWaitForLock = function(test) {
     var lock = locks.createLock();
     
