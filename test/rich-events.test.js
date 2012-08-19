@@ -109,3 +109,23 @@ exports.canPrependPrefixToEventNamesWhenPipingEvents = function(test) {
     
     source.emit("finish", 42);
 };
+
+exports.namesArePipedCorrectlyWhenUsingWildcards = function(test) {
+    var source = new richEvents.EventEmitter();
+    var destination = new richEvents.EventEmitter();
+    
+    richEvents.pipe({
+        source: source,
+        destination: destination,
+        destinationPrefix: "build.4",
+        events: ["**"]
+    });
+    
+    destination.on("build.4.finish", function(arg) {
+        test.equal(this.name, "build.4.finish");
+        test.equal(arg, 42);
+        test.done();
+    });
+    
+    source.emit("finish", 42);
+};
