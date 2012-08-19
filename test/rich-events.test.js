@@ -75,10 +75,34 @@ exports.pipingEventsEmitsTheSameEventsOnTargetAsOnSource = function(test) {
     var source = new richEvents.EventEmitter();
     var destination = new richEvents.EventEmitter();
     
-    richEvents.pipe(source, destination, ["start", "finish"]);
+    richEvents.pipe({
+        source: source,
+        destination: destination,
+        events: ["start", "finish"]
+    });
     
     destination.on("finish", function(arg) {
         test.equal(this.name, "finish");
+        test.equal(arg, 42);
+        test.done();
+    });
+    
+    source.emit("finish", 42);
+};
+
+exports.canPrependPrefixToEventNamesWhenPipingEvents = function(test) {
+    var source = new richEvents.EventEmitter();
+    var destination = new richEvents.EventEmitter();
+    
+    richEvents.pipe({
+        source: source,
+        destination: destination,
+        destinationPrefix: "build.4",
+        events: ["start", "finish"]
+    });
+    
+    destination.on("build.4.finish", function(arg) {
+        test.equal(this.name, "build.4.finish");
         test.equal(arg, 42);
         test.done();
     });
