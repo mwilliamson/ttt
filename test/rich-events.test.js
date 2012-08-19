@@ -70,3 +70,18 @@ exports.singleStarIsWildcardForEventNameSection = function(test) {
     
     emitter.emit("projects.compiler.finished");
 };
+
+exports.pipingEventsEmitsTheSameEventsOnTargetAsOnSource = function(test) {
+    var source = new richEvents.EventEmitter();
+    var destination = new richEvents.EventEmitter();
+    
+    richEvents.pipe(source, destination, ["start", "finish"]);
+    
+    destination.on("finish", function(arg) {
+        test.equal(this.name, "finish");
+        test.equal(arg, 42);
+        test.done();
+    });
+    
+    source.emit("finish", 42);
+};
